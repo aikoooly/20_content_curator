@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #FAF6F1;
+  --surface: #FFFFFF;
+  --surface-alt: #F2EDE7;
+  --border: #E0D9CF;
+  --border-focus: #4A7C59;
+  --text: #2C2C2C;
+  --text-secondary: #6B6560;
+  --text-muted: #9C958D;
+  --accent: #4A7C59;
+  --accent-hover: #3D6A4A;
+  --accent-soft: rgba(74, 124, 89, 0.08);
+  --twitter-blue: #1D9BF0;
+  --twitter-tint: rgba(29, 155, 240, 0.06);
+  --reddit-orange: #FF4500;
+  --reddit-tint: rgba(255, 69, 0, 0.06);
+  --xhs-red: #FF2442;
+  --xhs-tint: rgba(255, 36, 66, 0.06);
+  --score-green: #2D8F5E;
+  --score-yellow: #C4960A;
+  --score-red: #C44B3F;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Plus Jakarta Sans", "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Textarea focus ring */
+textarea:focus,
+input:focus {
+  outline: none;
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1) !important;
+}
+
+/* Loading pulse animation */
+@keyframes pulse-dot {
+  0%, 80%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+.pulse-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.pulse-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Score bar transition */
+.score-bar-fill {
+  transition: width 0.6s ease-out;
+}
+
+/* Preserve whitespace in post content */
+.post-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+}

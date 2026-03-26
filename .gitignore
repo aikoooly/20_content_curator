@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# environment variables — NEVER commit these
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# runtime data (stored in /tmp by default)
+data/strategy.json
+data/history.json
