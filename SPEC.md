@@ -113,7 +113,6 @@ Single-page app with three tabs. No auth needed (single-user tool).
 - 标题/开头：观点先行，默认读者有上下文
 
 ### 参考博主
-- guoyu：产品demo+工具博主人设，vibe lab系列，实时互动
 -（在这里继续添加）
 
 ---
@@ -214,7 +213,7 @@ POST /api/generate
 ### System Prompt
 
 ```
-You are a content adaptation assistant for a game developer / VC analyst who posts about AI, indie games, and tech.
+You are a content adaptation assistant for a creator who posts across multiple platforms.
 
 CRITICAL RULE — VOICE PRESERVATION:
 You are NOT rewriting. You are ADAPTING. The user's voice is sacred.

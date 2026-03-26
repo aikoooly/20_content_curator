@@ -1,11 +1,12 @@
 # Content Studio
 
-Adapt your draft posts for three platforms at once: **Twitter/X**, **Reddit**, and **小红书**.
+Adapt your draft posts for three platforms at once: **Twitter/X**, **Reddit**, and **小红书**. AI edits are capped at 20% of your draft — enough to fit each platform, not enough to lose your voice.
 
 ## Features
 
 - Write once, adapt to three platforms with a single click
 - Preserves your voice — this is an adaptation tool, not a rewriting tool
+- AI changes strictly capped at ≤20%, keeping your authenticity intact
 - Platform-fit scores (1-10) with color-coded progress bars
 - Persistent strategy document you can edit to tune every generation
 - Full history of past generations, click any entry to reload it
