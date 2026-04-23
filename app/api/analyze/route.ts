@@ -3,7 +3,20 @@ import Anthropic from "@anthropic-ai/sdk";
 import { buildAnalyzePrompt } from "@/lib/prompts";
 import type { AnalysisResult } from "@/lib/types";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// Ensure this route is always rendered at request time, never prerendered
+// (so `process.env` is read from the running function, not the build).
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+function getClient(): Anthropic {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      "ANTHROPIC_API_KEY is not set. In Vercel: Project → Settings → Environment Variables, add it for Production (and Preview / Development as needed), then redeploy."
+    );
+  }
+  return new Anthropic({ apiKey });
+}
 
 function parseJSON(raw: string): AnalysisResult | null {
   const candidates: string[] = [];
@@ -31,7 +44,7 @@ function parseJSON(raw: string): AnalysisResult | null {
   return null;
 }
 
-async function callClaude(draft: string, strategy: string): Promise<string> {
+async function callClaude(client: Anthropic, draft: string, strategy: string): Promise<string> {
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 4096,
@@ -51,11 +64,13 @@ export async function POST(req: NextRequest) {
     if (!draft?.trim()) return NextResponse.json({ error: "Draft is required" }, { status: 400 });
     if (!strategy?.trim()) return NextResponse.json({ error: "Strategy is required" }, { status: 400 });
 
-    let raw = await callClaude(draft, strategy);
+    const client = getClient();
+
+    let raw = await callClaude(client, draft, strategy);
     let result = parseJSON(raw);
 
     if (!result) {
-      raw = await callClaude(draft, strategy);
+      raw = await callClaude(client, draft, strategy);
       result = parseJSON(raw);
     }
 

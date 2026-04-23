@@ -7,7 +7,20 @@ import {
 } from "@/lib/prompts";
 import type { AppliedSuggestions, TwitterAdapt, RedditAdapt, XHSAdapt } from "@/lib/types";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// Ensure this route is always rendered at request time, never prerendered
+// (so `process.env` is read from the running function, not the build).
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+function getClient(): Anthropic {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      "ANTHROPIC_API_KEY is not set. In Vercel: Project → Settings → Environment Variables, add it for Production (and Preview / Development as needed), then redeploy."
+    );
+  }
+  return new Anthropic({ apiKey });
+}
 
 // ─── XML helpers ─────────────────────────────────────────────────
 
@@ -86,7 +99,7 @@ const parsers = { twitter: parseTwitter, reddit: parseReddit, xiaohongshu: parse
 
 // ─── Claude call ──────────────────────────────────────────────────
 
-async function callClaude(systemPrompt: string, userMessage: string): Promise<string> {
+async function callClaude(client: Anthropic, systemPrompt: string, userMessage: string): Promise<string> {
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 4096,
@@ -126,15 +139,17 @@ export async function POST(req: NextRequest) {
     const userMessage = JSON.stringify({ draft, applied_suggestions: applied_suggestions ?? {} });
     const parse = parsers[platform] as (raw: string) => ParseResult<TwitterAdapt | RedditAdapt | XHSAdapt>;
 
+    const client = getClient();
+
     console.log(`[adapt:${platform}] calling Claude`);
-    let raw = await callClaude(systemPrompt, userMessage);
+    let raw = await callClaude(client, systemPrompt, userMessage);
     console.log(`[adapt:${platform}] raw (${raw.length} chars):`, raw.slice(0, 300));
 
     let parsed = parse(raw);
 
     if (!parsed.ok) {
       console.log(`[adapt:${platform}] parse failed: ${parsed.parseError} — retrying`);
-      raw = await callClaude(systemPrompt, userMessage);
+      raw = await callClaude(client, systemPrompt, userMessage);
       console.log(`[adapt:${platform}] retry raw (${raw.length} chars):`, raw.slice(0, 300));
       parsed = parse(raw);
     }
